@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Configuration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #343a40;
+            border-radius: 5px;
+        }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: #f8f9fa;
+            font-size: 17px;
+        }
+
+        .tab button:hover {
+            background-color: #495057;
+        }
+
+        .tab button.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+            background-color: white;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .tabcontent.active {
+            display: block;
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+
+        h1 {
+            color: #343a40;
+        }
+
+        h2 {
+            color: #343a40;
+            margin-top: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .douban-user-field, .sleep-interval-field {
+            width: calc(50% - 10px);
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .douban-user-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .form-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1 1 calc(50% - 20px);
+            min-width: 300px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .priority-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .priority-group {
+            flex: 1 1 calc(50% - 20px);
+            min-width: 300px;
+        }
+
+        .subtitle {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-left: 10px;
+        }
+
+        .tmdb-group label {
+            display: flex;
+            align-items: center;
+        }
+
+        .enable-tmdb-label {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+    </style>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function openExternalLink(url) {
+            window.open(url, '_blank');
+        }
+
+        function addDoubanUserField() {
+            var container = document.getElementById("doubanUserContainer");
+            var newField = document.createElement("input");
+            newField.type = "text";
+            newField.name = "user_id";
+            newField.placeholder = "Douban User ID";
+            newField.classList.add("douban-user-field");
+            container.appendChild(newField);
+        }
+
+        function toggleDownloaderConfig() {
+            var selectedDownloader = document.getElementById("downloader").value;
+            var qbittorrentConfig = document.getElementById("qBittorrentConfig");
+            var xunleiConfig = document.getElementById("XunleiConfig");
+
+            if (selectedDownloader === "qbittorrent") {
+                qbittorrentConfig.classList.remove("hidden");
+                xunleiConfig.classList.add("hidden");
+            } else if (selectedDownloader === "xunlei") {
+                qbittorrentConfig.classList.add("hidden");
+                xunleiConfig.classList.remove("hidden");
+            }
+        }
+
+        function toggleCustomHost() {
+            var customHostEnabled = document.getElementById("custom_host_enabled").checked;
+            var customHostConfig = document.getElementById("customHostConfig");
+
+            if (customHostEnabled) {
+                customHostConfig.classList.remove("hidden");
+            } else {
+                customHostConfig.classList.add("hidden");
+            }
+        }
+
+        function toggleTMDBConfig() {
+            var tmdbEnabled = document.getElementById("tmdb_enabled").checked;
+            var tmdbConfig = document.getElementById("tmdbConfig");
+            var customHostConfig = document.getElementById("customHostConfig");
+
+            if (tmdbEnabled) {
+                tmdbConfig.classList.remove("hidden");
+                if (document.getElementById("custom_host_enabled").checked) {
+                    customHostConfig.classList.remove("hidden");
+                }
+            } else {
+                tmdbConfig.classList.add("hidden");
+                customHostConfig.classList.add("hidden");
+            }
+        }
+
+        window.onload = function() {
+            toggleDownloaderConfig();
+            toggleCustomHost();
+            toggleTMDBConfig();
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Config')">Configuration</button>
+        <button class="tablinks" onclick="openTab(event, 'XunleiSetup')">Xunlei Setup</button>
+        <button class="tablinks" onclick="openExternalLink('https://www.btnull.org')">BTNull Home</button>
+    </div>
+
+    <div id="Config" class="tabcontent active">
+        <h1>Configuration</h1>
+
+        <form method="post">
+            <h2>Douban</h2>
+            <div id="doubanUserContainer" class="douban-user-container">
+                {% for index, user_id in enumerate(douban_user_ids) %}
+                    <input type="text" name="user_id" value="{{ user_id }}" placeholder="Douban User ID" class="douban-user-field">
+                {% endfor %}
+            </div>
+            <button type="button" onclick="addDoubanUserField()">Add Douban User</button><br>
+
+            <h2>BTNull</h2>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="btnull_username">BTNull Username:</label>
+                    <input type="text" id="btnull_username" name="btnull_username" value="{{ config['BTNULL']['USERNAME'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="btnull_password">BTNull Password:</label>
+                    <input type="password" id="btnull_password" name="btnull_password" value="{{ config['BTNULL']['PASSWORD'] }}">
+                </div>
+            </div>
+
+            <h2>Downloader</h2>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="downloader">Select Downloader:</label>
+                    <select id="downloader" name="downloader" onchange="toggleDownloaderConfig()">
+                        <option value="qbittorrent" {{ "selected" if config['SETTINGS']['DOWNLOADER'] == "qbittorrent" else "" }}>qBittorrent</option>
+                        <option value="xunlei" {{ "selected" if config['SETTINGS']['DOWNLOADER'] == "xunlei" else "" }}>Xunlei</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="qBittorrentConfig" class="form-section hidden">
+                <div class="form-group">
+                    <label for="qb_host">qBittorrent Host:</label>
+                    <input type="text" id="qb_host" name="qb_host" value="{{ config['QBITTORRENT']['HOST'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="qb_port">qBittorrent Port:</label>
+                    <input type="text" id="qb_port" name="qb_port" value="{{ config['QBITTORRENT']['PORT'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="qb_username">qBittorrent Username:</label>
+                    <input type="text" id="qb_username" name="qb_username" value="{{ config['QBITTORRENT']['USERNAME'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="qb_password">qBittorrent Password:</label>
+                    <input type="password" id="qb_password" name="qb_password" value="{{ config['QBITTORRENT']['PASSWORD'] }}">
+                </div>
+            </div>
+
+            <div id="XunleiConfig" class="form-section hidden">
+                <div class="form-group">
+                    <label for="xunlei_username">Xunlei Username:</label>
+                    <input type="text" id="xunlei_username" name="xunlei_username" value="{{ config['XUNLEI']['USERNAME'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="xunlei_password">Xunlei Password:</label>
+                    <input type="password" id="xunlei_password" name="xunlei_password" value="{{ config['XUNLEI']['PASSWORD'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="xunlei_device_name">Xunlei Device Name:</label>
+                    <input type="text" id="xunlei_device_name" name="xunlei_device_name" value="{{ config['XUNLEI']['DEVICE_NAME'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="xunlei_download_path">Xunlei Download Path:</label>
+                    <input type="text" id="xunlei_download_path" name="xunlei_download_path" value="{{ config['XUNLEI']['XUNLEI_DOWNLOAD_PATH'] }}">
+                </div>
+            </div>
+
+            <h2>Settings</h2>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="sleep_interval">Sleep Interval (hours):</label>
+                    <input type="number" id="sleep_interval" name="sleep_interval" class="sleep-interval-field" value="{{ int(config['SETTINGS']['SLEEP_INTERVAL']) // 3600 }}">
+                </div>
+                <div class="form-group">
+                    <label for="junk_file_size">Junk File Size (MB):</label>
+                    <input type="number" id="junk_file_size" name="junk_file_size" class="junk-file-size-field" value="{{ config['SETTINGS']['JUNK_FILE_SIZE'] }}">
+                </div>
+            </div>
+
+            <h2>Priority</h2>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="priority_2160_60fps">2160p 60fps Priority:</label>
+                    <input type="number" id="priority_2160_60fps" name="priority_2160_60fps" value="{{ config['PRIORITY']['2160_60fps'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="priority_2160">2160p Priority:</label>
+                    <input type="number" id="priority_2160" name="priority_2160" value="{{ config['PRIORITY']['2160'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="priority_1080_60fps">1080p 60fps Priority:</label>
+                    <input type="number" id="priority_1080_60fps" name="priority_1080_60fps" value="{{ config['PRIORITY']['1080_60fps'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="priority_1080">1080p Priority:</label>
+                    <input type="number" id="priority_1080" name="priority_1080" value="{{ config['PRIORITY']['1080'] }}">
+                </div>
+            </div>
+
+            <h2>Advanced Priority</h2>
+            <div class="priority-section">
+                <div class="priority-group">
+                    <label for="custom_label">Custom Label:</label>
+                    <input type="text" id="custom_label" name="custom_label" value="{{ config['PRIORITY']['CUSTOM_LABEL'] }}">
+                </div>
+                <div class="priority-group">
+                    <label for="priority_min_size">Movie Minimum Size (GB):</label>
+                    <input type="number" id="priority_min_size" name="priority_min_size" value="{{ config['PRIORITY']['MIN_SIZE'] }}">
+                </div>
+            </div>
+            <div class="priority-section">
+                <div class="priority-group">
+                    <label for="highest_priority">Highest Priority:</label>
+                    <select id="highest_priority" name="highest_priority">
+                        <option value="custom_label" {{ "selected" if config['PRIORITY']['CUSTOM_LABEL_PRIORITY'] == "1" else "" }}>Custom Label</option>
+                        <option value="min_size" {{ "selected" if config['PRIORITY']['MIN_SIZE_PRIORITY'] == "1" else "" }}>Movie Minimum Size</option>
+                    </select>
+                </div>
+            </div>
+
+            <h2 class="tmdb-group">
+                TMDB Scrape   <input type="checkbox" id="tmdb_enabled" name="tmdb_enabled" onclick="toggleTMDBConfig()" {{ "checked" if config['TMDB']['TMDB_ENABLED'] == 'true' else "" }}>
+            </h2>
+            <div id="tmdbConfig" class="hidden">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="tmdb_api_key">TMDB API Key:</label>
+                        <input type="text" id="tmdb_api_key" name="tmdb_api_key" class="long-input" value="{{ config['TMDB']['API_KEY'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_host_enabled">
+                            <input type="checkbox" id="custom_host_enabled" name="custom_host_enabled" onclick="toggleCustomHost()" {{ "checked" if config['TMDB']['CUSTOM_HOST_ENABLED'] == 'true' else "" }}>
+                            Enable Custom Host
+                        </label>
+                    </div>
+                </div>
+
+                <div id="customHostConfig" class="form-section hidden">
+                    <div class="form-group">
+                        <label for="custom_host_ip_image">Custom Host IP for image.tmdb.org:</label>
+                        <input type="text" id="custom_host_ip_image" name="custom_host_ip_image" value="{{ config['TMDB']['CUSTOM_HOST_IP_IMAGE'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_host_ip_api">Custom Host IP for api.themoviedb.org:</label>
+                        <input type="text" id="custom_host_ip_api" name="custom_host_ip_api" value="{{ config['TMDB']['CUSTOM_HOST_IP_API'] }}">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+    <div id="XunleiSetup" class="tabcontent">
+        <h1>Xunlei Setup</h1>
+        <iframe src="/xunlei/popup"></iframe>
+    </div>
+</div>
+
+</body>
+</html>

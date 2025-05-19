@@ -1,0 +1,9 @@
+Flask
+requests
+bs4
+selenium
+webdriver-manager
+configparser
+natsort
+pandas
+openpyxl
